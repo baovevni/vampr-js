@@ -27,9 +27,9 @@ class Vampire {
     while (currentVampire.creator) {
       currentVampire = currentVampire.creator;
       numberOfVampires += 1;
-    };
+    }
     return numberOfVampires;
-  };
+  }
 
   // Returns true if this vampire is more senior than the other vampire. (Who is closer to the original vampire)
   isMoreSeniorThan(vampire) {
@@ -64,11 +64,49 @@ class Vampire {
       if (secondValue.indexOf(ele) !== -1) {
         return ele;
       }
-    })
+    });
     return result[0];
   }
-}
 
+  // Returns the vampire object with that name, or null if no vampire exists with that name
+  vampireWithName(name) {
+    if (this.name === name) {
+      return this;
+    }
+    for (const offspring of this.offspring) {
+      const found = offspring.vampireWithName(name);
+      if (found) {
+        return found;
+      }
+    }
+    return null;
+  }
+  // Returns the total number of vampires that exist
+  get totalDescendents() {
+    let totalDescendents = 0;
+
+    for (const offspring of this.offspring) {
+      totalDescendents += offspring.totalDescendents + 1;
+    }
+    return totalDescendents;
+  }
+
+
+  // Returns an array of all the vampires that were converted after 1980
+  get allMillennialVampires() {
+    let allMillennialVampires = [];
+
+    if (this.yearConverted > 1980) {
+      allMillennialVampires.push(this);
+    }
+
+    for (const offspring of this.offspring) {
+      const millenialDescendants = offspring.allMillennialVampires;
+      allMillennialVampires = allMillennialVampires.concat(millenialDescendants);
+    }
+    return allMillennialVampires;
+  }
+}
 
 module.exports = Vampire;
 
